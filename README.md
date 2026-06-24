@@ -73,12 +73,41 @@ The AI advisor sends every user message to GPT-4o-mini along with:
 
 GPT-4o-mini reads the `@Tool(description=...)` on each tool and decides which to call based on the user's intent. Spring AI handles the tool execution loop automatically — calling tools and feeding results back to the LLM until it returns a final response.
 
+## Identity Verification (Pre-Hook)
+
+Every session must be verified before any banking data is returned. This is enforced by `CustomerVerificationAdvisor` — a Spring AI `CallAdvisor` that intercepts requests **before** the LLM is called.
+
+```
+User message
+      │
+      ▼
+CustomerVerificationAdvisor.adviseCall()   ← pre-hook
+      │
+      ├─ session verified? ──yes──► LLM → MCP tools → response
+      │
+      ├─ message has email + phone? ──yes──► verify against bank-portal
+      │        ├─ match → mark session verified → proceed
+      │        └─ no match → "Verification failed, try again"
+      │
+      └─ no credentials → "Please provide email and phone"
+```
+
+Once verified, the session is remembered for the rest of the conversation.
+
+### Business Rules
+- Disputes on transactions **above $1,000** are blocked and routed to human review (call `1-800-xxx-xxxx`)
+- All other disputes are filed automatically via the MCP tool
+
 ## Demo Customers
 
-| Customer ID | Name | Accounts |
-|---|---|---|
-| 1 | John Smith | CHECKING: 4012001234567890, SAVINGS: 4012001234567891 |
-| 2 | Sarah Johnson | CHECKING: 4012009876543210, SAVINGS: 4012009876543211 |
+| Customer ID | Name | Username | Password | Email | Phone | Accounts |
+|---|---|---|---|---|---|---|
+| 1 | John Smith | `john.smith` | `password123` | john.smith@email.com | 415-555-0101 | CHECKING: 4012001234567890, SAVINGS: 4012001234567891 |
+| 2 | Sarah Johnson | `sarah.johnson` | `password123` | sarah.johnson@email.com | 415-555-0202 | CHECKING: 4012009876543210, SAVINGS: 4012009876543211 |
+| — | Helpdesk | `helpdesk` | `password123` | — | — | — |
+
+To start a session with the AI advisor, provide your email and phone when prompted:
+> *"My email is john.smith@email.com and phone is 415-555-0101"*
 
 ## Tech Stack
 
