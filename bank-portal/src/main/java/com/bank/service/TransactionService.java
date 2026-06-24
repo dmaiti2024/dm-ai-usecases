@@ -67,6 +67,13 @@ public class TransactionService {
         return toDTO(txn, account.getAccountNumber());
     }
 
+    public TransactionDTO getTransactionById(Long transactionId) {
+        Transaction txn = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found: " + transactionId));
+        BankAccount account = bankAccountRepository.findById(txn.getAccountId()).orElse(null);
+        return toDTO(txn, account != null ? account.getAccountNumber() : "");
+    }
+
     public List<TransactionDTO> getTransactionsByAccount(Long accountId) {
         BankAccount account = bankAccountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));

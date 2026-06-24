@@ -64,6 +64,10 @@ public class BankApiClient {
         }
     }
 
+    public String getTransactionById(Long transactionId) {
+        return get("/api/transactions/" + transactionId);
+    }
+
     public String getTransactionsByCustomer(Long customerId) {
         return get("/api/transactions/customer/" + customerId);
     }
