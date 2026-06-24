@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wells Fargo - AI Banking Advisor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link href="css/advisor.css" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="wf-header">
+  <div class="wf-header-brand">
+    <div class="wf-logo">
+      <span class="wf-wells">Wells</span>
+      <span class="wf-fargo">Fargo</span>
+    </div>
+    <div class="wf-header-subtitle">AI Banking Advisor</div>
+  </div>
+  <div class="wf-header-right">
+    <div class="role-selector">
+      <label class="role-label">I am a:</label>
+      <select id="roleSelect" class="role-select">
+        <option value="customer">Customer</option>
+        <option value="helpdesk">Helpdesk Staff</option>
+      </select>
+    </div>
+    <div id="statusIndicator" class="status-indicator status-checking">
+      <span class="status-dot"></span>
+      <span id="statusText">Connecting...</span>
+    </div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="advisor-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="advisor-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title"><i class="fas fa-user me-2"></i>Session Info</div>
+      <div class="sidebar-item">
+        <label>Session ID</label>
+        <div id="sessionId" class="session-id-display">&#8212;</div>
+      </div>
+      <div class="sidebar-item">
+        <label>Mode</label>
+        <div id="modeDisplay" class="mode-badge customer-mode">Customer</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title"><i class="fas fa-lightbulb me-2"></i>Quick Questions</div>
+      <div id="quickQuestions" class="quick-questions">
+        <!-- Populated by JS based on role -->
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title"><i class="fas fa-users me-2"></i>Customers</div>
+      <div class="customer-card" onclick="insertText('Show me accounts and balance for John Smith (customer ID 1)')">
+        <div class="customer-avatar">JS</div>
+        <div>
+          <div class="customer-name">John Smith</div>
+          <div class="customer-id">ID: 1 &nbsp;|&nbsp; Acme Corp</div>
+        </div>
+      </div>
+      <div class="customer-card" onclick="insertText('Show me accounts and balance for Sarah Johnson (customer ID 2)')">
+        <div class="customer-avatar sj">SJ</div>
+        <div>
+          <div class="customer-name">Sarah Johnson</div>
+          <div class="customer-id">ID: 2 &nbsp;|&nbsp; TechStart Inc</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="clear-btn" onclick="clearConversation()">
+      <i class="fas fa-trash-alt me-2"></i>New Conversation
+    </button>
+  </aside>
+
+  <!-- CHAT AREA -->
+  <main class="chat-area">
+    <div id="chatMessages" class="chat-messages">
+      <!-- Welcome message -->
+      <div class="message assistant-message">
+        <div class="message-avatar"><i class="fas fa-robot"></i></div>
+        <div class="message-bubble">
+          <div class="message-content">
+            <p>Welcome to Wells Fargo AI Advisor! &#128075;</p>
+            <p>I can help you with:</p>
+            <ul>
+              <li>Analyzing your spending patterns and income</li>
+              <li>Reviewing transaction history</li>
+              <li>Looking up account balances</li>
+              <li>Filing and tracking disputes</li>
+              <li>Comparing spending across categories</li>
+            </ul>
+            <p>Select your role from the top-right and start asking questions!</p>
+          </div>
+          <div class="message-time">Wells Fargo AI Advisor</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="chat-input-area">
+      <div class="chat-input-container">
+        <textarea id="messageInput" class="chat-input" placeholder="Ask about accounts, transactions, spending analysis, or disputes..." rows="1"
+          onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
+        <button id="sendBtn" class="send-btn" onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+      <div class="input-footer">
+        <small class="text-muted">Press Enter to send &nbsp;|&nbsp; Shift+Enter for new line &nbsp;|&nbsp;
+          Powered by OpenAI gpt-4o-mini + Wells Fargo MCP Tools</small>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/advisor.js"></script>
+</body>
+</html>
