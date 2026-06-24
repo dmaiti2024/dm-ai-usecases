@@ -1,5 +1,6 @@
 package com.bank.advisor.config;
 
+import com.bank.advisor.advisor.CustomerVerificationAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
@@ -61,11 +62,14 @@ public class AdvisorConfig {
     @Bean
     public ChatClient chatClient(OpenAiChatModel model,
                                   SyncMcpToolCallbackProvider mcpTools,
-                                  MessageWindowChatMemory chatMemory) {
+                                  MessageWindowChatMemory chatMemory,
+                                  CustomerVerificationAdvisor verificationAdvisor) {
         return ChatClient.builder(model)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultToolCallbacks(mcpTools)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .defaultAdvisors(
+                        verificationAdvisor,
+                        MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 }

@@ -70,7 +70,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/", "/index.html", "/css/**", "/js/**", "/images/**", "/favicon.ico",
-                    "/api/auth/**"
+                    "/api/auth/**",
+                    "/api/customers/verify"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
